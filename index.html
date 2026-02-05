@@ -39,6 +39,33 @@
       opacity:.85;
     }
 
+    #confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index: 30;
+      display:none;
+    }
+    #confetti.show{display:block;}
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      background: rgba(20,20,30,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.92);
+      padding: 12px 14px;
+      border-radius: 999px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.45);
+      display:none;
+      z-index: 40;
+      max-width: 92vw;
+      will-change: transform;
+    }
+    .toast.show{display:block;}
+
     .wrap{
       width:min(1100px, 92vw);
       margin:0 auto;
@@ -104,7 +131,7 @@
       letter-spacing:-.8px;
       text-shadow: 0 0 30px rgba(255,77,141,.22);
     }
-    .heroTitle .shine{
+    .shine{
       background: linear-gradient(90deg, #fff, #ffd1e1, #fff);
       -webkit-background-clip:text;
       background-clip:text;
@@ -116,15 +143,9 @@
       color:var(--muted);
       font-size:1.05rem;
       line-height:1.65;
+      position:relative;
     }
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      margin-top:10px;
-    }
     .btn{
       border:none;
       border-radius: 999px;
@@ -154,6 +175,7 @@
       transform: translateY(-1px);
       background: rgba(255,255,255,.14);
     }
+
     .noZone{
       position:relative;
       min-height: 56px;
@@ -209,7 +231,7 @@
       font-size:.92rem;
     }
 
-    /* Gallery (no 30 photos system — uses your exact photos) */
+    /* Gallery */
     .galleryWrap{
       background: var(--card);
       border: 1px solid rgba(255,255,255,.12);
@@ -293,7 +315,7 @@
     }
     .iconBtn:hover{ background: rgba(255,255,255,.14); }
 
-    /* Games section */
+    /* Games grid (2 columns; we will show 4 cards) */
     .grid2{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -370,21 +392,9 @@
     }
 
     /* Quiz */
-    .qBox{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .qQuestion{
-      font-weight:900;
-      font-size:1.05rem;
-      letter-spacing:-.2px;
-    }
-    .qOptions{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-    }
+    .qBox{ display:flex; flex-direction:column; gap:10px; }
+    .qQuestion{ font-weight:900; font-size:1.05rem; letter-spacing:-.2px; }
+    .qOptions{ display:grid; grid-template-columns: 1fr; gap:8px; }
     .opt{
       text-align:left;
       padding: 12px 12px;
@@ -400,33 +410,198 @@
     .opt.correct{ background: rgba(86,255,163,.14); border-color: rgba(86,255,163,.25); }
     .opt.wrong{ background: rgba(255,86,122,.14); border-color: rgba(255,86,122,.25); }
 
-    /* Confetti */
-    #confetti{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index: 30;
-      display:none;
+    /* ADD: Intro overlay (cover) */
+    .intro-overlay{
+      position:fixed; inset:0; z-index:9999;
+      display:grid; place-items:center;
+      overflow:hidden;
+      background: radial-gradient(1200px 600px at 20% 20%, rgba(255,84,160,.28), transparent 60%),
+                  radial-gradient(900px 520px at 80% 30%, rgba(153,88,255,.22), transparent 55%),
+                  linear-gradient(180deg, #0b0610, #12081b 55%, #09040e);
     }
-    #confetti.show{display:block;}
-
-    /* Cute toast */
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 22px;
-      transform: translateX(-50%);
-      background: rgba(20,20,30,.92);
-      border: 1px solid rgba(255,255,255,.14);
-      color: rgba(255,255,255,.92);
-      padding: 12px 14px;
+    .intro-bg{
+      position:absolute; inset:-40px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,84,160,.15), transparent 35%),
+        radial-gradient(circle at 70% 30%, rgba(153,88,255,.12), transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(255,255,255,.06), transparent 40%);
+      filter: blur(10px);
+      animation: slowFloat 10s ease-in-out infinite alternate;
+    }
+    @keyframes slowFloat{
+      from{ transform: translate3d(-10px,-8px,0) scale(1.02); }
+      to  { transform: translate3d(12px,10px,0) scale(1.05); }
+    }
+    .intro-content{
+      position:relative;
+      width:min(920px, 92vw);
+      padding: 28px 26px 22px;
+      border-radius: 26px;
+      background: rgba(18,10,25,.45);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 30px 120px rgba(0,0,0,.55);
+      backdrop-filter: blur(14px);
+      transform: translateY(8px);
+      animation: introPop .9s cubic-bezier(.2,.9,.2,1) both;
+    }
+    @keyframes introPop{
+      0%{ opacity:0; transform: translateY(28px) scale(.98); }
+      100%{ opacity:1; transform: translateY(0) scale(1); }
+    }
+    .intro-badge{
+      display:inline-block;
+      font-size: 12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      padding: 8px 12px;
       border-radius: 999px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.45);
-      display:none;
-      z-index: 40;
-      max-width: 92vw;
+      background: rgba(255,84,160,.16);
+      border: 1px solid rgba(255,84,160,.22);
+      color: rgba(255,255,255,.85);
     }
-    .toast.show{display:block;}
+    .intro-title{
+      margin: 14px 0 8px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1.04;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 10px 40px rgba(255,84,160,.18);
+    }
+    .intro-heart{
+      display:inline-block;
+      transform-origin:center;
+      animation: heartBeat 1.2s ease-in-out infinite;
+    }
+    @keyframes heartBeat{
+      0%,100%{ transform: scale(1); }
+      35%{ transform: scale(1.15) rotate(-2deg); }
+      70%{ transform: scale(1.03) rotate(2deg); }
+    }
+    .intro-subtitle{
+      margin: 0 0 16px;
+      font-size: 16px;
+      color: rgba(255,255,255,.74);
+      max-width: 62ch;
+    }
+    .intro-enter{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,84,160,.90);
+      color: rgba(255,255,255,.95);
+      font-weight: 800;
+      cursor:pointer;
+      box-shadow: 0 18px 60px rgba(255,84,160,.24);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .intro-enter:hover{ transform: translateY(-1px) scale(1.01); filter: brightness(1.02); }
+    .intro-enter:active{ transform: translateY(1px) scale(.99); }
+    .intro-hint{
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+    }
+    .intro-fx span{
+      position:absolute;
+      bottom:-24px;
+      font-size: 18px;
+      opacity:.75;
+      animation: floatUp linear forwards;
+      filter: drop-shadow(0 10px 20px rgba(255,84,160,.18));
+      pointer-events:none;
+    }
+    @keyframes floatUp{
+      to{ transform: translateY(-120vh) translateX(var(--drift)); opacity:0; }
+    }
+    .intro-overlay.hide{
+      animation: overlayOut .65s ease forwards;
+    }
+    @keyframes overlayOut{
+      to{ opacity:0; transform: scale(1.01); pointer-events:none; }
+    }
+
+    /* ADD: Animated message (typewriter cursor + glow shimmer) */
+    .animated-message{
+      position:relative;
+      animation: msgIn .9s ease both;
+    }
+    @keyframes msgIn{
+      0%{ opacity:0; transform: translateY(10px); filter: blur(6px); }
+      100%{ opacity:1; transform: translateY(0); filter: blur(0); }
+    }
+    .animated-message::after{
+      content:"";
+      position:absolute; inset:-10px;
+      background: radial-gradient(circle at 30% 20%, rgba(255,84,160,.22), transparent 55%),
+                  radial-gradient(circle at 70% 60%, rgba(153,88,255,.18), transparent 55%);
+      filter: blur(14px);
+      opacity:.85;
+      z-index:-1;
+      animation: glowMove 3.2s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    @keyframes glowMove{
+      from{ transform: translate(-6px,-4px); }
+      to{ transform: translate(6px,4px); }
+    }
+    .typewriter{
+      display:inline;
+      border-right: 2px solid rgba(255,255,255,.6);
+      padding-right: 2px;
+      animation: caret 1s steps(1) infinite;
+    }
+    @keyframes caret{ 50%{ border-right-color: transparent; } }
+
+    /* Extra games visuals */
+    .rt-box{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top: 10px; }
+    .rt-status{ color: rgba(255,255,255,.75); font-weight:800; }
+    .rt-start{
+      padding: 10px 14px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(153,88,255,.18);
+      color: rgba(255,255,255,.92);
+      cursor:pointer; font-weight:800;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .rt-start:hover{ background: rgba(153,88,255,.24); transform: translateY(-1px); }
+    .rt-heart{
+      width: 66px; height: 50px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,84,160,.25);
+      background: rgba(255,84,160,.16);
+      font-size: 20px;
+      cursor:pointer;
+      opacity: .9;
+      transition: transform .12s ease, filter .12s ease;
+      font-weight:900;
+    }
+    .rt-heart:enabled:hover{ transform: scale(1.06); filter: brightness(1.05); }
+    .rt-score{ margin-top: 8px; color: rgba(255,255,255,.7); }
+
+    .hunt-area{
+      position:relative;
+      height: 200px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      overflow:hidden;
+      box-shadow: inset 0 0 40px rgba(0,0,0,.25);
+    }
+    .hunt-heart{
+      position:absolute;
+      border:none;
+      width: 46px; height: 40px;
+      border-radius: 14px;
+      cursor:pointer;
+      background: rgba(255,77,141,.22);
+      border: 1px solid rgba(255,77,141,.28);
+      font-size: 18px;
+      font-weight: 900;
+      color:#fff;
+      box-shadow: 0 18px 40px rgba(255,77,141,.12);
+      transition: transform .08s ease, filter .08s ease;
+    }
+    .hunt-heart:hover{ transform: scale(1.07); filter: brightness(1.08); }
 
     .footer{
       margin-top: 18px;
@@ -443,7 +618,31 @@
   <canvas id="confetti"></canvas>
   <div class="toast" id="toast"></div>
 
-  <div class="wrap">
+  <!-- Cover intro overlay -->
+  <div id="introOverlay" class="intro-overlay" aria-hidden="false">
+    <div class="intro-bg"></div>
+
+    <div class="intro-content">
+      <div class="intro-badge">for you</div>
+
+      <h1 class="intro-title">
+        Will you be my <span class="shine">Valentine</span>?
+        <span class="intro-heart" aria-hidden="true">💗</span>
+      </h1>
+
+      <p class="intro-subtitle" id="introSubtitle">
+        I didn’t want to just text you… I wanted to give you a whole little moment.
+      </p>
+
+      <button id="enterBtn" class="intro-enter">Tap to open ✨</button>
+
+      <div class="intro-hint">Best in full screen • tap anywhere to continue</div>
+    </div>
+
+    <div class="intro-fx" aria-hidden="true"></div>
+  </div>
+
+  <div class="wrap" id="wrap">
     <div class="topbar">
       <div class="pill"><span class="dot"></span> Our Little Valentine Page</div>
       <div class="mini" id="miniLine">Tap “See our photos” and open memories full screen ✨</div>
@@ -466,9 +665,9 @@
         </div>
 
         <div class="badgeRow" style="margin-top:14px;">
-          <div class="badge" id="photoBadge">📸 6 photos loaded</div>
+          <div class="badge" id="photoBadge">📸 0 photos loaded</div>
           <div class="badge" id="sweetLine">💌 “I choose you. Again.”</div>
-          <div class="badge" id="gameBadge">🎲 2 mini games</div>
+          <div class="badge" id="gameBadge">🎲 4 mini games</div>
         </div>
       </div>
 
@@ -481,12 +680,12 @@
         <div class="badgeRow">
           <div class="badge">✨ Tap photos to zoom</div>
           <div class="badge">🎈 Confetti on “Yes”</div>
-          <div class="badge">🧠 Memory + Quiz</div>
+          <div class="badge">🧠 Memory + Quiz + More</div>
         </div>
 
         <p class="sub" style="margin:8px 0 0;">
-          I added a couple of tiny games because you make life feel playful.
-          If you win, you get a secret message.
+          I added a few tiny games because you make life feel playful.
+          Sometimes… little surprises pop up while you play.
         </p>
 
         <div class="row">
@@ -519,12 +718,8 @@
           <span>Memory Match 🧠</span>
           <span class="hint" id="memStatus">Matches: 0</span>
         </div>
-        <p class="sub">
-          Find all matching pairs. When you finish, you unlock a sweet surprise.
-        </p>
-
+        <p class="sub">Find all matching pairs. When you finish, you unlock a sweet surprise.</p>
         <div class="memoryGrid" id="memoryGrid"></div>
-
         <div class="row">
           <button class="btn btnGhost" id="memReset">Reset</button>
           <span class="tiny" id="memTip">Tip: it’s quick 😄</span>
@@ -537,10 +732,7 @@
           <span>Quick Love Quiz 💘</span>
           <span class="hint" id="quizStatus">Score: 0</span>
         </div>
-        <p class="sub">
-          Answer these little questions. Get 2/2 and you unlock the secret.
-        </p>
-
+        <p class="sub">Answer these little questions. Get 2/2 and you unlock the secret.</p>
         <div class="qBox">
           <div class="qQuestion" id="qText">Loading…</div>
           <div class="qOptions" id="qOptions"></div>
@@ -548,6 +740,35 @@
             <button class="btn btnGhost" id="quizNext">Next</button>
             <button class="btn btnGhost" id="quizRestart">Restart</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Reaction Tap -->
+      <div class="card">
+        <div class="gameTitle">
+          <span>Reaction Tap ⚡</span>
+          <span class="hint" id="rtBest">Best: —</span>
+        </div>
+        <p class="sub">Tap the heart the moment it appears. Faster = better.</p>
+        <div class="rt-box">
+          <div class="rt-status" id="rtStatus">Press Start</div>
+          <button class="rt-start" id="rtStart">Start</button>
+          <button class="rt-heart" id="rtHeart" disabled>💗</button>
+        </div>
+        <div class="rt-score" id="rtScore"></div>
+      </div>
+
+      <!-- Heart Hunt -->
+      <div class="card">
+        <div class="gameTitle">
+          <span>Heart Hunt 💞</span>
+          <span class="hint" id="huntStatus">Score: 0</span>
+        </div>
+        <p class="sub">Catch 6 hearts before the timer ends. Each catch might trigger a surprise.</p>
+        <div class="hunt-area" id="huntArea"></div>
+        <div class="row">
+          <button class="btn btnGhost" id="huntStart">Start</button>
+          <span class="tiny" id="huntTimer">Time: —</span>
         </div>
       </div>
     </div>
@@ -574,14 +795,236 @@
 
   <script>
     /***********************
-     * PHOTOS (your exact images)
-     * Put these files next to index.html (same folder):
-     * Snapchat-504182231.jpg
-     * Snapchat-1116768867.jpg
-     * Snapchat-1166505997.jpg
-     * Snapchat-2122437627.jpg
-     * Snapchat-1047984260.jpg
-     * Snapchat-3301345.jpg
+     * UTIL
+     ***********************/
+    const $ = (s) => document.querySelector(s);
+
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+    function shuffle(arr){
+      for(let i = arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    /***********************
+     * TOAST (single, safe, animated)
+     ***********************/
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      toastEl.animate(
+        [
+          { transform: "translateX(-50%) translateY(10px) scale(0.98)" },
+          { transform: "translateX(-50%) translateY(0px) scale(1.03)" },
+          { transform: "translateX(-50%) translateY(0px) scale(1.00)" }
+        ],
+        { duration: 320, easing: "cubic-bezier(.2,.9,.2,1)" }
+      );
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toastEl.classList.remove("show"), 2600);
+    }
+
+    /***********************
+     * CONFETTI
+     ***********************/
+    const confettiCanvas = document.getElementById("confetti");
+    const cctx = confettiCanvas.getContext("2d");
+
+    function resizeConfetti(){
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti(){
+      confettiCanvas.classList.add("show");
+      const pieces = Array.from({length: 180}, () => ({
+        x: Math.random()*confettiCanvas.width,
+        y: -20 - Math.random()*300,
+        r: 4 + Math.random()*6,
+        vx: -2 + Math.random()*4,
+        vy: 3 + Math.random()*5,
+        rot: Math.random()*Math.PI,
+        vr: -0.2 + Math.random()*0.4
+      }));
+
+      const start = performance.now();
+      function tick(t){
+        const elapsed = t - start;
+        cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+
+        pieces.forEach(p=>{
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+
+          cctx.save();
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+
+          const hue = (p.x / confettiCanvas.width) * 360;
+          cctx.fillStyle = `hsla(${hue}, 90%, 65%, .95)`;
+          cctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+          cctx.restore();
+        });
+
+        if(elapsed < 2400) requestAnimationFrame(tick);
+        else{
+          cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+          confettiCanvas.classList.remove("show");
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /***********************
+     * SECRETS (10 unique, never repeat until all shown once)
+     ***********************/
+    const SECRET_KEY = "valentine_secrets_shown_v2";
+    const ALL_SECRETS = [
+      "💌 Secret: I like you in the calm moments… and I love you in the chaotic ones.",
+      "💌 Secret: You’re my favorite notification, honestly.",
+      "💌 Secret: If I could pause time, I’d pause it when you’re smiling.",
+      "💌 Secret: I act normal, but I miss you more than I say.",
+      "💌 Secret: You make boring days feel soft and warm.",
+      "💌 Secret: I don’t just want you in my life… I want you in my future.",
+      "💌 Secret: You’re the ‘home’ feeling I didn’t know I needed.",
+      "💌 Secret: I choose you… not once. Repeatedly.",
+      "💌 Secret: I’d still pick you in every timeline.",
+      "💌 Secret: If love is a habit, I’m addicted to you."
+    ];
+
+    function loadShownSecrets(){
+      try{
+        const raw = localStorage.getItem(SECRET_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return new Set(Array.isArray(arr) ? arr : []);
+      }catch{
+        return new Set();
+      }
+    }
+    function saveShownSecrets(set){
+      try{ localStorage.setItem(SECRET_KEY, JSON.stringify([...set])); }catch{}
+    }
+
+    let shownSecrets = loadShownSecrets();
+
+    function remainingSecrets(){
+      return ALL_SECRETS.filter(s => !shownSecrets.has(s));
+    }
+
+    function popSecret(){
+      const remaining = remainingSecrets();
+      if(remaining.length === 0){
+        toast("💗 You found all the little secrets. Now you’re just showing off.");
+        document.getElementById("miniLine").textContent = "All secrets found 💗 (okay… that’s cute).";
+        return;
+      }
+      const pick = remaining[Math.floor(Math.random() * remaining.length)];
+      shownSecrets.add(pick);
+      saveShownSecrets(shownSecrets);
+      toast(pick);
+
+      const miniLine = document.getElementById("miniLine");
+      miniLine.textContent = "A secret appeared… 💌";
+
+      if(Math.random() < 0.35) launchConfetti();
+    }
+
+    // chance-based secret pop
+    function maybePopSecret(reason){
+      const chance = (reason === "win") ? 0.85
+                   : (reason === "game") ? 0.30
+                   : (reason === "yes") ? 0.25
+                   : (reason === "no") ? 0.12
+                   : 0.10;
+      if(Math.random() < chance) popSecret();
+    }
+
+    /***********************
+     * INTRO OVERLAY
+     ***********************/
+    const overlay = document.getElementById("introOverlay");
+    const wrap = document.getElementById("wrap");
+    wrap.style.visibility = "hidden";
+
+    function spawnOverlayEmoji(){
+      const fx = overlay.querySelector(".intro-fx");
+      const s = document.createElement("span");
+      const hearts = ["💗","💖","💕","💞","💘","✨"];
+      s.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.setProperty("--drift", (Math.random()*160 - 80) + "px");
+      s.style.animationDuration = (4 + Math.random()*3) + "s";
+      s.style.fontSize = (14 + Math.random()*16) + "px";
+      fx.appendChild(s);
+      setTimeout(() => s.remove(), 8000);
+    }
+    const overlayTimer = setInterval(spawnOverlayEmoji, 240);
+
+    function enterSite(){
+      clearInterval(overlayTimer);
+      overlay.classList.add("hide");
+      setTimeout(() => {
+        overlay.style.display = "none";
+        wrap.style.visibility = "visible";
+        startMessageAnimation();
+      }, 650);
+    }
+
+    document.getElementById("enterBtn").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      enterSite();
+    });
+    overlay.addEventListener("click", (e)=>{
+      if(e.target.id === "enterBtn") return;
+      enterSite();
+    });
+
+    /***********************
+     * ANIMATED MAIN MESSAGE
+     ***********************/
+    function typewriter(el, speed){
+      if(!el) return;
+      const full = el.textContent.trim();
+      el.textContent = "";
+      el.classList.add("animated-message");
+      const span = document.createElement("span");
+      span.className = "typewriter";
+      el.appendChild(span);
+
+      let i = 0;
+      const t = setInterval(() => {
+        span.textContent += full[i] || "";
+        i++;
+        if(i >= full.length){
+          clearInterval(t);
+          el.textContent = full;
+          el.classList.add("animated-message");
+        }
+      }, speed);
+    }
+
+    function startMessageAnimation(){
+      const msg = document.getElementById("desc");
+      typewriter(msg, 15);
+
+      // subtle shimmer pulse every few seconds (keeps it alive)
+      setInterval(() => {
+        if(document.hidden) return;
+        msg.classList.add("animated-message");
+        setTimeout(() => msg.classList.remove("animated-message"), 1200);
+      }, 9000);
+    }
+
+    /***********************
+     * PHOTOS
      ***********************/
     const photoFiles = [
       "Snapchat-504182231.jpg",
@@ -648,7 +1091,7 @@
     });
 
     /***********************
-     * BUTTONS: scroll + Yes + No runs away + games scroll
+     * BUTTONS
      ***********************/
     const photosBtn = document.getElementById("photosBtn");
     const gamesBtn = document.getElementById("gamesBtn");
@@ -663,9 +1106,9 @@
       miniLine.textContent = "Okay… my heart is doing backflips right now ❤️";
       launchConfetti();
       toast("YAYYY 💗 Now scroll… I added games too 😄");
+      maybePopSecret("yes");
     });
 
-    // Playful “No” button
     noBtn.addEventListener("mouseenter", ()=>{
       const x = Math.random()*240 - 120;
       const y = Math.random()*120 - 60;
@@ -674,33 +1117,25 @@
     noBtn.addEventListener("click", ()=>{
       noBtn.style.transform = `translate(0px,0px)`;
       toast("Nice try 🙈 press YES properly 😭");
+      maybePopSecret("no");
     });
 
     /***********************
-     * CREATIVE EXTRA: Secret unlock
+     * SECRET BUTTON (requires a win)
      ***********************/
     const secretBtn = document.getElementById("secretBtn");
     const secretHint = document.getElementById("secretHint");
-
-    let memoryWon = false;
-    let quizWon = false;
-
-    secretBtn.addEventListener("click", ()=>{
-      if(memoryWon || quizWon){
-        toast("💌 Secret unlocked: I don’t just like you… I choose you. Every day. ❤️");
-        miniLine.textContent = "Secret unlocked 💌 (you’re officially too powerful)";
-      } else {
-        toast("Win a game first 😄 Try Memory Match or the Quiz!");
-      }
-    });
+    let anyWin = false;
 
     function updateSecretHint(){
-      if(memoryWon || quizWon){
-        secretHint.textContent = "Unlocked ✅ tap it!";
-      } else {
-        secretHint.textContent = "Win a game first.";
-      }
+      secretHint.textContent = anyWin ? "Unlocked ✅ tap it!" : "Win a game first.";
     }
+    updateSecretHint();
+
+    secretBtn.addEventListener("click", ()=>{
+      if(anyWin) popSecret();
+      else toast("Win a game first 😄 Try Memory Match, Quiz, Reaction Tap, or Heart Hunt!");
+    });
 
     /***********************
      * GAME 1: Memory Match
@@ -709,69 +1144,58 @@
     const memStatus = document.getElementById("memStatus");
     const memReset = document.getElementById("memReset");
 
-    const emojisBase = ["💗","✨","🍫","🌹","🫶","🎀"]; // 6 pairs => 12 cards
-    let memCards = [];
+    const emojisBase = ["💗","✨","🍫","🌹","🫶","🎀"]; // 6 pairs => 12
     let firstPick = null;
     let lock = false;
     let matches = 0;
-
-    function shuffle(arr){
-      for(let i = arr.length-1; i>0; i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
 
     function setupMemory(){
       memoryGrid.innerHTML = "";
       firstPick = null;
       lock = false;
       matches = 0;
-      memoryWon = false;
-      updateSecretHint();
       memStatus.textContent = `Matches: ${matches}`;
 
-      memCards = shuffle([...emojisBase, ...emojisBase]).map((val, idx)=>({ id: idx, val, state: "hidden" }));
-
-      memCards.forEach((c)=>{
+      const vals = shuffle([...emojisBase, ...emojisBase]);
+      vals.forEach((val, id)=>{
         const el = document.createElement("div");
         el.className = "mCard";
-        el.dataset.id = c.id;
-        el.innerHTML = `<span>${c.val}</span>`;
-        el.addEventListener("click", ()=> onMemoryClick(el, c));
+        el.dataset.id = String(id);
+        el.innerHTML = `<span>${val}</span>`;
+        el.addEventListener("click", ()=> onMemoryClick(el, val));
         memoryGrid.appendChild(el);
       });
     }
 
-    function onMemoryClick(el, c){
+    function onMemoryClick(el, val){
       if(lock) return;
-      if(el.classList.contains("matched")) return;
-      if(el.classList.contains("revealed")) return;
+      if(el.classList.contains("matched") || el.classList.contains("revealed")) return;
 
       el.classList.add("revealed");
 
       if(!firstPick){
-        firstPick = { el, val: c.val };
+        firstPick = { el, val };
         return;
       }
 
-      // second pick
-      if(firstPick.val === c.val){
+      if(firstPick.val === val){
         el.classList.remove("revealed");
         firstPick.el.classList.remove("revealed");
         el.classList.add("matched");
         firstPick.el.classList.add("matched");
         firstPick = null;
+
         matches++;
         memStatus.textContent = `Matches: ${matches}`;
+        maybePopSecret("game");
 
         if(matches === emojisBase.length){
-          memoryWon = true;
+          anyWin = true;
           updateSecretHint();
-          toast("You won Memory Match! 💗 Secret is unlocked!");
-          miniLine.textContent = "Memory win 🧠✨ — okay now press that secret button";
+          toast("You won Memory Match! 💗 Secret unlocked!");
+          miniLine.textContent = "Memory win 🧠✨ — tap ‘Unlock secret’ 💌";
           launchConfetti();
+          maybePopSecret("win");
         }
       } else {
         lock = true;
@@ -801,18 +1225,9 @@
     const quizRestart = document.getElementById("quizRestart");
     const quizStatus = document.getElementById("quizStatus");
 
-    // Keep it sweet + safe. You can edit the questions easily.
     const quiz = [
-      {
-        q: "This page is made with…",
-        options: ["Love ❤️", "Luck 🍀", "Boredom 😴", "Nothing 😶"],
-        correct: 0
-      },
-      {
-        q: "When you smile, my mood goes…",
-        options: ["Up 📈", "Down 📉", "Offline 📴", "Confused 🤔"],
-        correct: 0
-      }
+      { q: "This page is made with…", options: ["Love ❤️", "Luck 🍀", "Boredom 😴", "Nothing 😶"], correct: 0 },
+      { q: "When you smile, my mood goes…", options: ["Up 📈", "Down 📉", "Offline 📴", "Confused 🤔"], correct: 0 }
     ];
 
     let qi = 0;
@@ -839,26 +1254,25 @@
 
       const correct = quiz[qi].correct;
       const opts = [...qOptions.querySelectorAll(".opt")];
-      opts.forEach((o, i)=>{
-        if(i === correct) o.classList.add("correct");
-      });
+      opts.forEach((o, i)=>{ if(i === correct) o.classList.add("correct"); });
 
       if(idx === correct){
         score++;
         quizStatus.textContent = `Score: ${score}`;
         toast("Correct 💗");
+        maybePopSecret("game");
       } else {
         btn.classList.add("wrong");
         toast("Aww wrong 😄 try again");
       }
 
-      // win condition: 2/2
       if(score === quiz.length){
-        quizWon = true;
+        anyWin = true;
         updateSecretHint();
         miniLine.textContent = "Quiz perfect score 💘 — secret unlocked!";
         toast("You got 2/2! Secret unlocked 💌");
         launchConfetti();
+        maybePopSecret("win");
       }
     }
 
@@ -870,8 +1284,6 @@
     quizRestart.addEventListener("click", ()=>{
       qi = 0;
       score = 0;
-      quizWon = false;
-      updateSecretHint();
       renderQuiz();
       toast("Quiz restarted 🔁");
     });
@@ -879,70 +1291,185 @@
     renderQuiz();
 
     /***********************
-     * TOAST
+     * GAME 3: Reaction Tap
      ***********************/
-    const toastEl = document.getElementById("toast");
-    let toastTimer = null;
-    function toast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=> toastEl.classList.remove("show"), 2400);
+    const rtStart = document.getElementById("rtStart");
+    const rtHeart = document.getElementById("rtHeart");
+    const rtStatus = document.getElementById("rtStatus");
+    const rtScore = document.getElementById("rtScore");
+    const rtBestEl = document.getElementById("rtBest");
+    const BEST_KEY = "valentine_reaction_best_v2";
+
+    let best = null;
+    try{
+      const raw = localStorage.getItem(BEST_KEY);
+      best = raw ? Number(raw) : null;
+      if(best && Number.isFinite(best)) rtBestEl.textContent = `Best: ${best}ms`;
+    }catch{}
+
+    let armed = false;
+    let startTime = 0;
+    let rtTimer = null;
+
+    function rtReset(){
+      rtHeart.disabled = true;
+      rtStatus.textContent = "Get ready…";
+      rtScore.textContent = "";
+      armed = false;
     }
+
+    rtStart.addEventListener("click", ()=>{
+      rtReset();
+      const delay = 900 + Math.random()*2400;
+      clearTimeout(rtTimer);
+      rtTimer = setTimeout(()=>{
+        rtHeart.disabled = false;
+        rtStatus.textContent = "NOW!";
+        startTime = performance.now();
+        armed = true;
+      }, delay);
+    });
+
+    rtHeart.addEventListener("click", ()=>{
+      if(!armed || rtHeart.disabled) return;
+      const ms = Math.round(performance.now() - startTime);
+      rtHeart.disabled = true;
+      armed = false;
+
+      let vibe = "Okay 😳";
+      if(ms < 220) vibe = "INSANE 💘";
+      else if(ms < 320) vibe = "Fast 💖";
+      else if(ms < 450) vibe = "Nice 💗";
+
+      rtStatus.textContent = `Time: ${ms}ms`;
+      rtScore.textContent = `Vibe: ${vibe} • Try again for a better score!`;
+
+      if(best === null || ms < best){
+        best = ms;
+        rtBestEl.textContent = `Best: ${best}ms`;
+        try{ localStorage.setItem(BEST_KEY, String(best)); }catch{}
+        toast("New best 😭💗");
+        anyWin = true;
+        updateSecretHint();
+        maybePopSecret("win");
+      } else {
+        maybePopSecret("game");
+      }
+    });
 
     /***********************
-     * CONFETTI
+     * GAME 4: Heart Hunt
      ***********************/
-    const confettiCanvas = document.getElementById("confetti");
-    const cctx = confettiCanvas.getContext("2d");
-    function resizeConfetti(){
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
+    const huntArea = document.getElementById("huntArea");
+    const huntStart = document.getElementById("huntStart");
+    const huntStatus = document.getElementById("huntStatus");
+    const huntTimer = document.getElementById("huntTimer");
+
+    let huntScore = 0;
+    let huntTime = 0;
+    let huntRunning = false;
+    let huntTick = null;
+    let huntSpawn = null;
+
+    function clearHuntHearts(){
+      huntArea.querySelectorAll(".hunt-heart").forEach(b => b.remove());
     }
-    window.addEventListener("resize", resizeConfetti);
-    resizeConfetti();
 
-    function launchConfetti(){
-      confettiCanvas.classList.add("show");
-      const pieces = Array.from({length: 180}, ()=>({
-        x: Math.random()*confettiCanvas.width,
-        y: -20 - Math.random()*300,
-        r: 4 + Math.random()*6,
-        vx: -2 + Math.random()*4,
-        vy: 3 + Math.random()*5,
-        rot: Math.random()*Math.PI,
-        vr: -0.2 + Math.random()*0.4
-      }));
+    function setHuntUI(){
+      huntStatus.textContent = `Score: ${huntScore}`;
+      huntTimer.textContent = huntRunning ? `Time: ${huntTime}s` : `Time: —`;
+    }
 
-      const start = performance.now();
-      function tick(t){
-        const elapsed = t - start;
-        cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+    function spawnHuntHeart(){
+      if(!huntRunning) return;
+      if(huntArea.querySelectorAll(".hunt-heart").length >= 5) return;
 
-        pieces.forEach(p=>{
-          p.x += p.vx;
-          p.y += p.vy;
-          p.rot += p.vr;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "hunt-heart";
+      b.textContent = ["💗","💖","💞","💘","💕"][Math.floor(Math.random()*5)];
 
-          cctx.save();
-          cctx.translate(p.x, p.y);
-          cctx.rotate(p.rot);
+      const pad = 10;
+      const w = huntArea.clientWidth;
+      const h = huntArea.clientHeight;
+      const x = Math.floor(Math.random() * Math.max(1, (w - 60 - pad))) + pad;
+      const y = Math.floor(Math.random() * Math.max(1, (h - 54 - pad))) + pad;
+      b.style.left = x + "px";
+      b.style.top = y + "px";
 
-          const hue = (p.x / confettiCanvas.width) * 360;
-          cctx.fillStyle = `hsla(${hue}, 90%, 65%, .95)`;
-          cctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+      b.animate(
+        [
+          { transform: "scale(0.7)", opacity: 0.0 },
+          { transform: "scale(1.1)", opacity: 1.0 },
+          { transform: "scale(1.0)", opacity: 1.0 }
+        ],
+        { duration: 220, easing: "cubic-bezier(.2,.9,.2,1)" }
+      );
 
-          cctx.restore();
-        });
+      const life = 900 + Math.random()*700;
+      const kill = setTimeout(() => b.remove(), life);
 
-        if(elapsed < 2400) requestAnimationFrame(tick);
-        else{
-          cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
-          confettiCanvas.classList.remove("show");
+      b.addEventListener("click", ()=>{
+        clearTimeout(kill);
+        b.remove();
+        huntScore++;
+        setHuntUI();
+        toast("Caught 💗");
+        maybePopSecret("game");
+        if(Math.random() < 0.16) launchConfetti();
+
+        if(huntScore >= 6){
+          // win
+          huntRunning = false;
+          clearInterval(huntTick);
+          clearInterval(huntSpawn);
+          clearHuntHearts();
+          setHuntUI();
+
+          anyWin = true;
+          updateSecretHint();
+          toast("Heart Hunt win! 💞 Secret unlocked.");
+          miniLine.textContent = "Heart Hunt win 💞 — you’re too fast.";
+          launchConfetti();
+          maybePopSecret("win");
         }
-      }
-      requestAnimationFrame(tick);
+      });
+
+      huntArea.appendChild(b);
     }
+
+    function startHunt(){
+      clearHuntHearts();
+      huntScore = 0;
+      huntTime = 18;
+      huntRunning = true;
+      setHuntUI();
+      toast("Go! Catch the hearts 💗");
+
+      clearInterval(huntTick);
+      clearInterval(huntSpawn);
+
+      huntTick = setInterval(()=>{
+        huntTime--;
+        setHuntUI();
+        if(huntTime <= 0){
+          huntRunning = false;
+          clearInterval(huntTick);
+          clearInterval(huntSpawn);
+          clearHuntHearts();
+          setHuntUI();
+          toast("Time’s up 😭 Try again!");
+          miniLine.textContent = "Try Heart Hunt again… I believe in you 💗";
+        }
+      }, 1000);
+
+      huntSpawn = setInterval(()=>{
+        spawnHuntHeart();
+      }, 260 + Math.floor(Math.random()*120));
+    }
+
+    huntStart.addEventListener("click", startHunt);
+    setHuntUI();
 
     /***********************
      * HEARTS BACKGROUND
