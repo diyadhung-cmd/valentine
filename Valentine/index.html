@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For You ❤️</title>
+
+  <style>
+    :root{
+      --bg1:#0b0b14;
+      --bg2:#1a0b22;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.12);
+      --text:#f7f7fb;
+      --muted: rgba(255,255,255,.75);
+      --pink:#ff4d8d;
+      --pink2:#ff8fb6;
+      --glow: 0 0 24px rgba(255,77,141,.35);
+      --radius: 24px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1000px 700px at 20% 10%, rgba(255,77,141,.18), transparent 60%),
+                  radial-gradient(900px 700px at 80% 20%, rgba(130,80,255,.20), transparent 60%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* Background hearts */
+    #heartsCanvas{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      opacity:.85;
+    }
+
+    .wrap{
+      width:min(1100px, 92vw);
+      margin:0 auto;
+      padding:28px 0 70px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 18px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.4px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      box-shadow: var(--glow);
+    }
+    .mini{
+      color:var(--muted);
+      font-size:.95rem;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:52vw;
+    }
+
+    .hero{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+    @media (max-width: 900px){
+      .hero{ grid-template-columns: 1fr; }
+      .mini{ max-width: 70vw; }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding:22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
+    .heroTitle{
+      font-size: clamp(2.1rem, 4vw, 3.3rem);
+      line-height:1.05;
+      margin:0 0 12px;
+      letter-spacing:-.8px;
+      text-shadow: 0 0 30px rgba(255,77,141,.22);
+    }
+    .heroTitle .shine{
+      background: linear-gradient(90deg, #fff, #ffd1e1, #fff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      filter: drop-shadow(0 0 14px rgba(255,255,255,.15));
+    }
+    .desc{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.65;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin-top:10px;
+    }
+    .btn{
+      border:none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{transform: scale(.98)}
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--pink), #ff2f7b);
+      color:#fff;
+      box-shadow: 0 14px 30px rgba(255,77,141,.22), var(--glow);
+    }
+    .btnPrimary:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 18px 44px rgba(255,77,141,.28), var(--glow);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.10);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .btnGhost:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.14);
+    }
+    .noZone{
+      position:relative;
+      min-height: 56px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .sideCard{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .quote{
+      margin:0;
+      font-size:1.05rem;
+      line-height:1.55;
+      color: rgba(255,255,255,.92);
+    }
+    .quote small{
+      display:block;
+      margin-top:10px;
+      color:var(--muted);
+    }
+
+    .badgeRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:2px;
+    }
+    .badge{
+      font-size:.9rem;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.88);
+    }
+
+    .sectionTitle{
+      margin:26px 0 12px;
+      font-size:1.35rem;
+      letter-spacing:-.2px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    /* Gallery (no 30 photos system — uses your exact photos) */
+    .galleryWrap{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
+    .gallery{
+      column-count: 3;
+      column-gap: 12px;
+    }
+    @media (max-width: 900px){ .gallery{ column-count: 2; } }
+    @media (max-width: 520px){ .gallery{ column-count: 1; } }
+
+    .photo{
+      width:100%;
+      border-radius: 18px;
+      margin: 0 0 12px;
+      display:block;
+      cursor:pointer;
+      transition: transform .15s ease, filter .15s ease;
+      filter: saturate(1.05) contrast(1.02);
+      break-inside: avoid;
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+    }
+    .photo:hover{
+      transform: translateY(-2px) scale(1.01);
+      filter: saturate(1.12) contrast(1.05);
+    }
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.72);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      z-index: 20;
+    }
+    .lightbox.open{display:flex;}
+    .lbCard{
+      width:min(980px, 96vw);
+      border-radius: 22px;
+      background: rgba(20,20,30,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      overflow:hidden;
+      position:relative;
+    }
+    .lbImg{
+      width:100%;
+      display:block;
+      max-height: 78vh;
+      object-fit: contain;
+      background: rgba(0,0,0,.35);
+    }
+    .lbBar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size:.95rem;
+    }
+    .lbBtns{display:flex; gap:8px;}
+    .iconBtn{
+      border:none;
+      cursor:pointer;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      border: 1px solid rgba(255,255,255,.14);
+      font-weight:800;
+    }
+    .iconBtn:hover{ background: rgba(255,255,255,.14); }
+
+    /* Games section */
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 900px){ .grid2{ grid-template-columns:1fr; } }
+
+    .gameTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:0 0 10px;
+      font-size:1.08rem;
+      letter-spacing:-.2px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size:.95rem;
+      line-height:1.5;
+      margin:0 0 12px;
+    }
+
+    /* Memory game */
+    .memoryGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 520px){ .memoryGrid{ grid-template-columns: repeat(3, 1fr);} }
+    .mCard{
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 1.5rem;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      box-shadow: 0 12px 25px rgba(0,0,0,.25);
+      transition: transform .12s ease, background .12s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .mCard:hover{ transform: translateY(-1px); }
+    .mCard.revealed, .mCard.matched{
+      background: rgba(255,77,141,.18);
+      border-color: rgba(255,77,141,.35);
+      box-shadow: 0 16px 34px rgba(255,77,141,.12);
+    }
+    .mCard span{
+      opacity:0;
+      transform: scale(.9);
+      transition: opacity .12s ease, transform .12s ease;
+    }
+    .mCard.revealed span, .mCard.matched span{
+      opacity:1;
+      transform: scale(1);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+    }
+    .tiny{
+      color: var(--muted);
+      font-size:.9rem;
+    }
+
+    /* Quiz */
+    .qBox{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .qQuestion{
+      font-weight:900;
+      font-size:1.05rem;
+      letter-spacing:-.2px;
+    }
+    .qOptions{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+    }
+    .opt{
+      text-align:left;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      cursor:pointer;
+      font-weight:800;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .opt:hover{ transform: translateY(-1px); background: rgba(255,255,255,.12); }
+    .opt.correct{ background: rgba(86,255,163,.14); border-color: rgba(86,255,163,.25); }
+    .opt.wrong{ background: rgba(255,86,122,.14); border-color: rgba(255,86,122,.25); }
+
+    /* Confetti */
+    #confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index: 30;
+      display:none;
+    }
+    #confetti.show{display:block;}
+
+    /* Cute toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      background: rgba(20,20,30,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.92);
+      padding: 12px 14px;
+      border-radius: 999px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.45);
+      display:none;
+      z-index: 40;
+      max-width: 92vw;
+    }
+    .toast.show{display:block;}
+
+    .footer{
+      margin-top: 18px;
+      text-align:center;
+      color: rgba(255,255,255,.70);
+      font-size:.95rem;
+    }
+    .footer b{ color:#fff; }
+  </style>
+</head>
+
+<body>
+  <canvas id="heartsCanvas"></canvas>
+  <canvas id="confetti"></canvas>
+  <div class="toast" id="toast"></div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="pill"><span class="dot"></span> Our Little Valentine Page</div>
+      <div class="mini" id="miniLine">Tap “See our photos” and open memories full screen ✨</div>
+    </div>
+
+    <div class="hero">
+      <div class="card">
+        <h1 class="heroTitle"><span class="shine">Will you be my Valentine?</span> ❤️</h1>
+
+        <p class="desc" id="desc">
+          I didn’t want a boring message. I wanted something that feels like us—simple, sweet,
+          and full of memories. So here it is… a tiny page with a big question.
+        </p>
+
+        <div class="noZone">
+          <button class="btn btnPrimary" id="yesBtn">Yes 💗</button>
+          <button class="btn btnGhost" id="noBtn">No 🙈</button>
+          <button class="btn btnGhost" id="photosBtn">See our photos ↓</button>
+          <button class="btn btnGhost" id="gamesBtn">Play mini games 🎮</button>
+        </div>
+
+        <div class="badgeRow" style="margin-top:14px;">
+          <div class="badge" id="photoBadge">📸 6 photos loaded</div>
+          <div class="badge" id="sweetLine">💌 “I choose you. Again.”</div>
+          <div class="badge" id="gameBadge">🎲 2 mini games</div>
+        </div>
+      </div>
+
+      <div class="card sideCard">
+        <p class="quote">
+          “If love had a face, it would look like the way you smile when you’re happy.”
+          <small>— me, trying to be poetic</small>
+        </p>
+
+        <div class="badgeRow">
+          <div class="badge">✨ Tap photos to zoom</div>
+          <div class="badge">🎈 Confetti on “Yes”</div>
+          <div class="badge">🧠 Memory + Quiz</div>
+        </div>
+
+        <p class="sub" style="margin:8px 0 0;">
+          I added a couple of tiny games because you make life feel playful.
+          If you win, you get a secret message.
+        </p>
+
+        <div class="row">
+          <button class="btn btnGhost" id="secretBtn">Unlock secret 💌</button>
+          <span class="tiny" id="secretHint">Win a game first.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="sectionTitle" id="photos">
+      <div>Our Photos ✨</div>
+      <div class="hint">Tap any photo to open • ESC to close</div>
+    </div>
+
+    <div class="galleryWrap">
+      <div class="gallery" id="gallery"></div>
+    </div>
+
+    <!-- GAMES -->
+    <div class="sectionTitle" id="games">
+      <div>Mini Games 🎮</div>
+      <div class="hint">Tiny, cute, and actually works.</div>
+    </div>
+
+    <div class="grid2">
+      <!-- Memory game -->
+      <div class="card">
+        <div class="gameTitle">
+          <span>Memory Match 🧠</span>
+          <span class="hint" id="memStatus">Matches: 0</span>
+        </div>
+        <p class="sub">
+          Find all matching pairs. When you finish, you unlock a sweet surprise.
+        </p>
+
+        <div class="memoryGrid" id="memoryGrid"></div>
+
+        <div class="row">
+          <button class="btn btnGhost" id="memReset">Reset</button>
+          <span class="tiny" id="memTip">Tip: it’s quick 😄</span>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="card">
+        <div class="gameTitle">
+          <span>Quick Love Quiz 💘</span>
+          <span class="hint" id="quizStatus">Score: 0</span>
+        </div>
+        <p class="sub">
+          Answer these little questions. Get 2/2 and you unlock the secret.
+        </p>
+
+        <div class="qBox">
+          <div class="qQuestion" id="qText">Loading…</div>
+          <div class="qOptions" id="qOptions"></div>
+          <div class="row">
+            <button class="btn btnGhost" id="quizNext">Next</button>
+            <button class="btn btnGhost" id="quizRestart">Restart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Made with ❤️ by <b>you</b> (and a little extra magic).
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lbCard">
+      <img class="lbImg" id="lbImg" alt="photo" />
+      <div class="lbBar">
+        <div id="lbLabel">Photo</div>
+        <div class="lbBtns">
+          <button class="iconBtn" id="prevBtn">←</button>
+          <button class="iconBtn" id="nextBtn">→</button>
+          <button class="iconBtn" id="closeBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * PHOTOS (your exact images)
+     * Put these files next to index.html (same folder):
+     * Snapchat-504182231.jpg
+     * Snapchat-1116768867.jpg
+     * Snapchat-1166505997.jpg
+     * Snapchat-2122437627.jpg
+     * Snapchat-1047984260.jpg
+     * Snapchat-3301345.jpg
+     ***********************/
+    const photoFiles = [
+      "Snapchat-504182231.jpg",
+      "Snapchat-1116768867.jpg",
+      "Snapchat-1166505997.jpg",
+      "Snapchat-2122437627.jpg",
+      "Snapchat-1047984260.jpg",
+      "Snapchat-3301345.jpg"
+    ];
+
+    const galleryEl = document.getElementById("gallery");
+    const photoBadge = document.getElementById("photoBadge");
+    photoBadge.textContent = `📸 ${photoFiles.length} photos loaded`;
+
+    photoFiles.forEach((src, i) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.className = "photo";
+      img.loading = "lazy";
+      img.alt = `Photo ${i+1}`;
+      img.addEventListener("click", () => openLightbox(i));
+      galleryEl.appendChild(img);
+    });
+
+    /***********************
+     * LIGHTBOX
+     ***********************/
+    const lightbox = document.getElementById("lightbox");
+    const lbImg = document.getElementById("lbImg");
+    const lbLabel = document.getElementById("lbLabel");
+    const closeBtn = document.getElementById("closeBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    let currentIndex = 0;
+
+    function openLightbox(index){
+      currentIndex = index;
+      lbImg.src = photoFiles[currentIndex];
+      lbLabel.textContent = `Photo ${currentIndex+1} / ${photoFiles.length}`;
+      lightbox.classList.add("open");
+    }
+    function closeLightbox(){
+      lightbox.classList.remove("open");
+      lbImg.src = "";
+    }
+    function prevPhoto(){
+      currentIndex = (currentIndex - 1 + photoFiles.length) % photoFiles.length;
+      openLightbox(currentIndex);
+    }
+    function nextPhoto(){
+      currentIndex = (currentIndex + 1) % photoFiles.length;
+      openLightbox(currentIndex);
+    }
+
+    closeBtn.addEventListener("click", closeLightbox);
+    prevBtn.addEventListener("click", prevPhoto);
+    nextBtn.addEventListener("click", nextPhoto);
+    lightbox.addEventListener("click", (e)=>{ if(e.target === lightbox) closeLightbox(); });
+    window.addEventListener("keydown", (e)=>{
+      if(!lightbox.classList.contains("open")) return;
+      if(e.key === "Escape") closeLightbox();
+      if(e.key === "ArrowLeft") prevPhoto();
+      if(e.key === "ArrowRight") nextPhoto();
+    });
+
+    /***********************
+     * BUTTONS: scroll + Yes + No runs away + games scroll
+     ***********************/
+    const photosBtn = document.getElementById("photosBtn");
+    const gamesBtn = document.getElementById("gamesBtn");
+    photosBtn.addEventListener("click", ()=> document.getElementById("photos").scrollIntoView({behavior:"smooth"}));
+    gamesBtn.addEventListener("click", ()=> document.getElementById("games").scrollIntoView({behavior:"smooth"}));
+
+    const miniLine = document.getElementById("miniLine");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+
+    yesBtn.addEventListener("click", ()=>{
+      miniLine.textContent = "Okay… my heart is doing backflips right now ❤️";
+      launchConfetti();
+      toast("YAYYY 💗 Now scroll… I added games too 😄");
+    });
+
+    // Playful “No” button
+    noBtn.addEventListener("mouseenter", ()=>{
+      const x = Math.random()*240 - 120;
+      const y = Math.random()*120 - 60;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    noBtn.addEventListener("click", ()=>{
+      noBtn.style.transform = `translate(0px,0px)`;
+      toast("Nice try 🙈 press YES properly 😭");
+    });
+
+    /***********************
+     * CREATIVE EXTRA: Secret unlock
+     ***********************/
+    const secretBtn = document.getElementById("secretBtn");
+    const secretHint = document.getElementById("secretHint");
+
+    let memoryWon = false;
+    let quizWon = false;
+
+    secretBtn.addEventListener("click", ()=>{
+      if(memoryWon || quizWon){
+        toast("💌 Secret unlocked: I don’t just like you… I choose you. Every day. ❤️");
+        miniLine.textContent = "Secret unlocked 💌 (you’re officially too powerful)";
+      } else {
+        toast("Win a game first 😄 Try Memory Match or the Quiz!");
+      }
+    });
+
+    function updateSecretHint(){
+      if(memoryWon || quizWon){
+        secretHint.textContent = "Unlocked ✅ tap it!";
+      } else {
+        secretHint.textContent = "Win a game first.";
+      }
+    }
+
+    /***********************
+     * GAME 1: Memory Match
+     ***********************/
+    const memoryGrid = document.getElementById("memoryGrid");
+    const memStatus = document.getElementById("memStatus");
+    const memReset = document.getElementById("memReset");
+
+    const emojisBase = ["💗","✨","🍫","🌹","🫶","🎀"]; // 6 pairs => 12 cards
+    let memCards = [];
+    let firstPick = null;
+    let lock = false;
+    let matches = 0;
+
+    function shuffle(arr){
+      for(let i = arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function setupMemory(){
+      memoryGrid.innerHTML = "";
+      firstPick = null;
+      lock = false;
+      matches = 0;
+      memoryWon = false;
+      updateSecretHint();
+      memStatus.textContent = `Matches: ${matches}`;
+
+      memCards = shuffle([...emojisBase, ...emojisBase]).map((val, idx)=>({ id: idx, val, state: "hidden" }));
+
+      memCards.forEach((c)=>{
+        const el = document.createElement("div");
+        el.className = "mCard";
+        el.dataset.id = c.id;
+        el.innerHTML = `<span>${c.val}</span>`;
+        el.addEventListener("click", ()=> onMemoryClick(el, c));
+        memoryGrid.appendChild(el);
+      });
+    }
+
+    function onMemoryClick(el, c){
+      if(lock) return;
+      if(el.classList.contains("matched")) return;
+      if(el.classList.contains("revealed")) return;
+
+      el.classList.add("revealed");
+
+      if(!firstPick){
+        firstPick = { el, val: c.val };
+        return;
+      }
+
+      // second pick
+      if(firstPick.val === c.val){
+        el.classList.remove("revealed");
+        firstPick.el.classList.remove("revealed");
+        el.classList.add("matched");
+        firstPick.el.classList.add("matched");
+        firstPick = null;
+        matches++;
+        memStatus.textContent = `Matches: ${matches}`;
+
+        if(matches === emojisBase.length){
+          memoryWon = true;
+          updateSecretHint();
+          toast("You won Memory Match! 💗 Secret is unlocked!");
+          miniLine.textContent = "Memory win 🧠✨ — okay now press that secret button";
+          launchConfetti();
+        }
+      } else {
+        lock = true;
+        const prev = firstPick.el;
+        firstPick = null;
+        setTimeout(()=>{
+          el.classList.remove("revealed");
+          prev.classList.remove("revealed");
+          lock = false;
+        }, 550);
+      }
+    }
+
+    memReset.addEventListener("click", ()=>{
+      setupMemory();
+      toast("Memory game reset 🔁");
+    });
+
+    setupMemory();
+
+    /***********************
+     * GAME 2: Quiz
+     ***********************/
+    const qText = document.getElementById("qText");
+    const qOptions = document.getElementById("qOptions");
+    const quizNext = document.getElementById("quizNext");
+    const quizRestart = document.getElementById("quizRestart");
+    const quizStatus = document.getElementById("quizStatus");
+
+    // Keep it sweet + safe. You can edit the questions easily.
+    const quiz = [
+      {
+        q: "This page is made with…",
+        options: ["Love ❤️", "Luck 🍀", "Boredom 😴", "Nothing 😶"],
+        correct: 0
+      },
+      {
+        q: "When you smile, my mood goes…",
+        options: ["Up 📈", "Down 📉", "Offline 📴", "Confused 🤔"],
+        correct: 0
+      }
+    ];
+
+    let qi = 0;
+    let score = 0;
+    let answered = false;
+
+    function renderQuiz(){
+      answered = false;
+      qText.textContent = quiz[qi].q;
+      qOptions.innerHTML = "";
+      quiz[qi].options.forEach((text, idx)=>{
+        const b = document.createElement("button");
+        b.className = "opt";
+        b.textContent = text;
+        b.addEventListener("click", ()=> pickOption(b, idx));
+        qOptions.appendChild(b);
+      });
+      quizStatus.textContent = `Score: ${score}`;
+    }
+
+    function pickOption(btn, idx){
+      if(answered) return;
+      answered = true;
+
+      const correct = quiz[qi].correct;
+      const opts = [...qOptions.querySelectorAll(".opt")];
+      opts.forEach((o, i)=>{
+        if(i === correct) o.classList.add("correct");
+      });
+
+      if(idx === correct){
+        score++;
+        quizStatus.textContent = `Score: ${score}`;
+        toast("Correct 💗");
+      } else {
+        btn.classList.add("wrong");
+        toast("Aww wrong 😄 try again");
+      }
+
+      // win condition: 2/2
+      if(score === quiz.length){
+        quizWon = true;
+        updateSecretHint();
+        miniLine.textContent = "Quiz perfect score 💘 — secret unlocked!";
+        toast("You got 2/2! Secret unlocked 💌");
+        launchConfetti();
+      }
+    }
+
+    quizNext.addEventListener("click", ()=>{
+      qi = (qi + 1) % quiz.length;
+      renderQuiz();
+    });
+
+    quizRestart.addEventListener("click", ()=>{
+      qi = 0;
+      score = 0;
+      quizWon = false;
+      updateSecretHint();
+      renderQuiz();
+      toast("Quiz restarted 🔁");
+    });
+
+    renderQuiz();
+
+    /***********************
+     * TOAST
+     ***********************/
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toastEl.classList.remove("show"), 2400);
+    }
+
+    /***********************
+     * CONFETTI
+     ***********************/
+    const confettiCanvas = document.getElementById("confetti");
+    const cctx = confettiCanvas.getContext("2d");
+    function resizeConfetti(){
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti(){
+      confettiCanvas.classList.add("show");
+      const pieces = Array.from({length: 180}, ()=>({
+        x: Math.random()*confettiCanvas.width,
+        y: -20 - Math.random()*300,
+        r: 4 + Math.random()*6,
+        vx: -2 + Math.random()*4,
+        vy: 3 + Math.random()*5,
+        rot: Math.random()*Math.PI,
+        vr: -0.2 + Math.random()*0.4
+      }));
+
+      const start = performance.now();
+      function tick(t){
+        const elapsed = t - start;
+        cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+
+        pieces.forEach(p=>{
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+
+          cctx.save();
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+
+          const hue = (p.x / confettiCanvas.width) * 360;
+          cctx.fillStyle = `hsla(${hue}, 90%, 65%, .95)`;
+          cctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+
+          cctx.restore();
+        });
+
+        if(elapsed < 2400) requestAnimationFrame(tick);
+        else{
+          cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+          confettiCanvas.classList.remove("show");
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /***********************
+     * HEARTS BACKGROUND
+     ***********************/
+    const heartsCanvas = document.getElementById("heartsCanvas");
+    const hctx = heartsCanvas.getContext("2d");
+
+    function resizeHearts(){
+      heartsCanvas.width = window.innerWidth;
+      heartsCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeHearts);
+    resizeHearts();
+
+    const hearts = Array.from({ length: 46 }, () => makeHeart());
+    function makeHeart(){
+      return {
+        x: Math.random()*heartsCanvas.width,
+        y: heartsCanvas.height + Math.random()*heartsCanvas.height,
+        s: 8 + Math.random()*16,
+        vy: 0.6 + Math.random()*1.4,
+        vx: -0.35 + Math.random()*0.7,
+        a: 0.25 + Math.random()*0.35,
+        w: 0.6 + Math.random()*1.1
+      };
+    }
+    function drawHeart(x,y,size,alpha){
+      hctx.save();
+      hctx.translate(x,y);
+      hctx.scale(size/18, size/18);
+      hctx.globalAlpha = alpha;
+      const grd = hctx.createLinearGradient(-10,-10, 10, 10);
+      grd.addColorStop(0, "rgba(255,77,141,1)");
+      grd.addColorStop(1, "rgba(255,143,182,1)");
+      hctx.fillStyle = grd;
+
+      hctx.beginPath();
+      hctx.moveTo(0, 6);
+      hctx.bezierCurveTo(0, -6, -14, -6, -14, 6);
+      hctx.bezierCurveTo(-14, 18, 0, 22, 0, 30);
+      hctx.bezierCurveTo(0, 22, 14, 18, 14, 6);
+      hctx.bezierCurveTo(14, -6, 0, -6, 0, 6);
+      hctx.closePath();
+      hctx.fill();
+      hctx.restore();
+    }
+    function animateHearts(){
+      hctx.clearRect(0,0,heartsCanvas.width, heartsCanvas.height);
+      hearts.forEach((p,i)=>{
+        p.y -= p.vy;
+        p.x += Math.sin(p.y*0.01) * p.w + p.vx;
+        drawHeart(p.x, p.y, p.s, p.a);
+        if(p.y < -40){
+          hearts[i] = makeHeart();
+          hearts[i].y = heartsCanvas.height + 40;
+        }
+      });
+      requestAnimationFrame(animateHearts);
+    }
+    animateHearts();
+  </script>
+</body>
+</html>
